@@ -29,4 +29,4 @@ This dataset contains various metrics related to video streaming performance. Be
 
 This dataset was used for analysis in the following research article:
 
-Wang, Q., Dai, HN., Wu, D. et al. Data analysis on video streaming QoE over mobile networks. J Wireless Com Network 2018, 173 (2018). https://doi.org/10.1186/s13638-018-1180-8
+*Wang, Q., Dai, HN., Wu, D. et al. Data analysis on video streaming QoE over mobile networks. J Wireless Com Network 2018, 173 (2018). https://doi.org/10.1186/s13638-018-1180-8*
