@@ -23,3 +23,10 @@ This dataset contains various metrics related to video streaming performance. Be
 15. **Video Quality Score (SQuality)**: A score representing the overall quality of the video.
 16. **Initial Buffering Score (SLoading)**: A score representing the performance of the initial buffering phase.
 17. **Freeze Score (SStalling)**: A score representing the performance of the video in terms of stalling or freezing.
+
+
+
+
+This dataset was used for analysis in the following research article:
+
+Wang, Q., Dai, HN., Wu, D. et al. Data analysis on video streaming QoE over mobile networks. J Wireless Com Network 2018, 173 (2018). https://doi.org/10.1186/s13638-018-1180-8
