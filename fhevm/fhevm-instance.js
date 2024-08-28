@@ -16,9 +16,12 @@ async function encryptValue(instance, contractAddress, userAddress, value) {
     const encryptedStr = typeof encrypted === 'string' ? encrypted : JSON.stringify(encrypted);
     
     // Calculate size of encrypted value (in bytes)
-    const encryptedSize = Buffer.byteLength(encryptedStr, 'utf8');
+    const encryptedSizeBytes = Buffer.byteLength(encryptedStr, 'utf8');
     
-    return { encrypted: encryptedStr, encryptionTime, encryptedSize };
+    // Convert size from bytes to kilobytes (KB)
+    const encryptedSizeKB = encryptedSizeBytes / 1024;
+    
+    return { encrypted: encryptedStr, encryptionTime, encryptedSizeKB };
 }
 
 async function main() {
@@ -43,21 +46,21 @@ async function main() {
                     const mosValue = parseFloat(row['MOS']); // Parse MOS value as a float
                     if (!isNaN(mosValue)) {
                         // Encrypt the value and measure encryption time
-                        const { encrypted, encryptionTime, encryptedSize } = await encryptValue(instance, contractAddress, userAddress, mosValue);
+                        const { encrypted, encryptionTime, encryptedSizeKB } = await encryptValue(instance, contractAddress, userAddress, mosValue);
 
                         // Log the encrypted result and time taken
                         console.log(`Encrypted MOS value: ${encrypted}`);
                         console.log(`Encryption time: ${encryptionTime.toFixed(3)} ms`);
-                        console.log(`Encrypted size: ${encryptedSize} bytes`);
+                        console.log(`Encrypted size: ${encryptedSizeKB.toFixed(3)} KB`);
 
                         // Store the encryption time and size along with the original value
-                        encryptionTimes.push({ value: mosValue, encryptionTime: encryptionTime.toFixed(3), size: encryptedSize });
+                        encryptionTimes.push({ value: mosValue, encryptionTime: encryptionTime.toFixed(3), sizeKB: encryptedSizeKB.toFixed(3) });
                     }
                 }
 
                 // Convert encryption times to a CSV and save to file
-                const csvHeader = 'value,encryptionTime (ms),encryptedSize (bytes)\n';
-                const csvRows = encryptionTimes.map(row => `${row.value},${row.encryptionTime},${row.size}`).join('\n');
+                const csvHeader = 'value,encryptionTime (ms),encryptedSize (KB)\n';
+                const csvRows = encryptionTimes.map(row => `${row.value},${row.encryptionTime},${row.sizeKB}`).join('\n');
                 fs.writeFileSync('encryption_times.csv', csvHeader + csvRows);
 
                 console.log('Encryption times saved to encryption_times.csv.');
