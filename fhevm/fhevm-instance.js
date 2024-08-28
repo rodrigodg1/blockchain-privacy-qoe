@@ -6,7 +6,7 @@ const { performance } = require('perf_hooks'); // Using perf_hooks for better pr
 async function encryptValue(instance, contractAddress, userAddress, value) {
     const input = instance.createEncryptedInput(contractAddress, userAddress);
     const startTime = performance.now();  // Start time measurement
-    const encrypted = await input.add64(value).encrypt();
+    const encrypted = await input.add8(value).encrypt();
     const endTime = performance.now();  // End time measurement
 
     // Calculate encryption time in milliseconds
@@ -59,11 +59,11 @@ async function main() {
                 }
 
                 // Convert encryption times to a CSV and save to file
-                const csvHeader = 'value,encryptionTime (ms),encryptedSize (KB)\n';
+                const csvHeader = 'value,EncryptionTime(ms),EncryptedSize(KB)\n';
                 const csvRows = encryptionTimes.map(row => `${row.value},${row.encryptionTime},${row.sizeKB}`).join('\n');
-                fs.writeFileSync('encryption_times.csv', csvHeader + csvRows);
+                fs.writeFileSync('MOS_encryption_times.csv', csvHeader + csvRows);
 
-                console.log('Encryption times saved to encryption_times.csv.');
+                console.log('Encryption times saved to MOS_encryption_times.csv.');
             }
         });
     } catch (error) {
