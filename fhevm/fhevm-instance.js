@@ -1,4 +1,18 @@
 const fhevm = require('fhevmjs');
+const fs = require('fs');
+const Papa = require('papaparse');
+const { performance } = require('perf_hooks'); // Using perf_hooks for better precision
+
+async function encryptValue(instance, contractAddress, userAddress, value) {
+    const input = instance.createEncryptedInput(contractAddress, userAddress);
+    const startTime = performance.now();  // Start time measurement
+    const encrypted = await input.add64(value).encrypt();
+    const endTime = performance.now();  // End time measurement
+
+    // Calculate encryption time in milliseconds
+    const encryptionTime = endTime - startTime;
+    return { encrypted, encryptionTime };
+}
 
 async function main() {
     try {
@@ -6,22 +20,44 @@ async function main() {
         const instance = await fhevm.createInstance({ networkUrl: "http://localhost:8545" });
         console.log('Instance created:', instance);
 
-        // Define the number you want to encrypt
-        const numberToEncrypt = 42;
-        
-        contractAddress = '0x8Fdb26641d14a80FCCBE87BF455338Dd9C539a50';
-        userAddress = '0xa5e1defb98EFe38EBb2D958CEe052410247F4c80';
-        // Encrypt the number using the FHEVM instance
-        const input = instance.createEncryptedInput(contractAddress, userAddress);
-        const encrypted = input.add64(numberToEncrypt).encrypt();
-        //const test = input.
+        // Define contract and user addresses
+        const contractAddress = '0x8Fdb26641d14a80FCCBE87BF455338Dd9C539a50';
+        const userAddress = '0xa5e1defb98EFe38EBb2D958CEe052410247F4c80';
 
-        // Log the encrypted result
-        console.log('Encrypted number:', encrypted);
+        // Read the CSV file
+        const csvFile = fs.readFileSync('pokemon.csv', 'utf8');
+        Papa.parse(csvFile, {
+            header: true,
+            complete: async (results) => {
+                const encryptionTimes = [];
+
+                // Process each row in the CSV file
+                for (const row of results.data) {
+                    const mosValue = parseFloat(row['MOS']); // Parse MOS value as a float
+                    if (!isNaN(mosValue)) {
+                        // Encrypt the value and measure encryption time
+                        const { encrypted, encryptionTime } = await encryptValue(instance, contractAddress, userAddress, mosValue);
+
+                        // Log the encrypted result and time taken
+                        console.log(`Encrypted MOS value: ${encrypted}`);
+                        console.log(`Encryption time: ${encryptionTime.toFixed(3)} ms`);
+
+                        // Store the encryption time and original value
+                        encryptionTimes.push({ value: mosValue, encryptionTime: encryptionTime.toFixed(3) });
+                    }
+                }
+
+                // Convert encryption times to a CSV and save to file
+                const csvHeader = 'value,encryptionTime (ms)\n';
+                const csvRows = encryptionTimes.map(row => `${row.value},${row.encryptionTime}`).join('\n');
+                fs.writeFileSync('encryption_times.csv', csvHeader + csvRows);
+
+                console.log('Encryption times saved to encryption_times.csv.');
+            }
+        });
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
 main();
-
