@@ -4,6 +4,10 @@ const Papa = require('papaparse');
 const { performance } = require('perf_hooks');
 
 async function encryptValue(instance, contractAddress, userAddress, value) {
+    if (typeof value !== 'number' || isNaN(value)) {
+        throw new Error('Value must be a valid number or a bigint.');
+    }
+
     const input = instance.createEncryptedInput(contractAddress, userAddress);
     const startTime = performance.now();
     const encrypted = await input.add16(value).encrypt();
@@ -30,36 +34,57 @@ async function main() {
             header: true,
             complete: async (results) => {
                 const columns = ['QoS_type', 'QoD_model', 'QoD_os-version', 'QoS_operator', 'MOS'];
-                const encryptionResults = {};
-
-                for (const column of columns) {
-                    encryptionResults[column] = [];
-                }
+                const encryptionResults = [];
 
                 for (const row of results.data) {
+                    const rowResult = { };
+
                     for (const column of columns) {
                         let value = row[column];
-                        if (column === 'MOS' || column === 'QoS_type' || column === 'QoS_operator') {
+
+                        // Parse only specific columns as numbers
+                        if (['QoS_type', 'QoS_operator', 'MOS'].includes(column)) {
                             value = parseFloat(value);
-                            if (isNaN(value)) continue;
+                        } else {
+                            value = Number(value);
                         }
 
-                        const { encrypted, encryptionTime, encryptedSizeKB } = await encryptValue(instance, contractAddress, userAddress, value);
+                        // Check if value is valid before proceeding with encryption
+                        if (!isNaN(value)) {
+                            try {
+                                const { encrypted, encryptionTime, encryptedSizeKB } = await encryptValue(instance, contractAddress, userAddress, value);
+                                
+                                console.log(`Encrypted ${column} value: ${encrypted}`);
+                                console.log(`Encryption time: ${encryptionTime.toFixed(3)} ms`);
+                                console.log(`Encrypted size: ${encryptedSizeKB.toFixed(3)} KB`);
 
-                        console.log(`Encrypted ${column} value: ${encrypted}`);
-                        console.log(`Encryption time: ${encryptionTime.toFixed(3)} ms`);
-                        console.log(`Encrypted size: ${encryptedSizeKB.toFixed(3)} KB`);
-
-                        encryptionResults[column].push({ value, encryptionTime: encryptionTime.toFixed(3), sizeKB: encryptedSizeKB.toFixed(3) });
+                                rowResult[column] = value;
+                                rowResult[`${column}_EncryptionTime(ms)`] = encryptionTime.toFixed(3);
+                                rowResult[`${column}_EncryptedSize(KB)`] = encryptedSizeKB.toFixed(3);
+                            } catch (error) {
+                                console.error(`Error encrypting ${column} value:`, value, error.message);
+                                rowResult[column] = 'Error';
+                                rowResult[`${column}_EncryptionTime(ms)`] = 'Error';
+                                rowResult[`${column}_EncryptedSize(KB)`] = 'Error';
+                            }
+                        } else {
+                            console.warn(`Skipping invalid value for ${column}:`, row[column]);
+                            rowResult[column] = 'Invalid';
+                            rowResult[`${column}_EncryptionTime(ms)`] = 'Invalid';
+                            rowResult[`${column}_EncryptedSize(KB)`] = 'Invalid';
+                        }
                     }
+
+                    encryptionResults.push(rowResult);
                 }
 
-                for (const column of columns) {
-                    const csvHeader = 'value,EncryptionTime(ms),EncryptedSize(KB)\n';
-                    const csvRows = encryptionResults[column].map(row => `${row.value},${row.encryptionTime},${row.sizeKB}`).join('\n');
-                    fs.writeFileSync(`${column}_encryption_times.csv`, csvHeader + csvRows);
-                    console.log(`Encryption times saved to ${column}_encryption_times.csv.`);
-                }
+                // Combine results into a single CSV file
+                const csvHeader = Object.keys(encryptionResults[0]).join(',') + '\n';
+                const csvRows = encryptionResults.map(row => Object.values(row).join(',')).join('\n');
+                const finalCsvContent = csvHeader + csvRows;
+                
+                fs.writeFileSync('combined_encryption_results.csv', finalCsvContent);
+                console.log('All encryption times saved to combined_encryption_results.csv.');
             }
         });
     } catch (error) {
