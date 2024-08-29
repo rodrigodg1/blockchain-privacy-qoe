@@ -3,6 +3,7 @@ const fs = require('fs');
 const Papa = require('papaparse');
 const { performance } = require('perf_hooks');
 
+
 async function encryptValue(instance, contractAddress, userAddress, value) {
     if (typeof value !== 'number' || isNaN(value)) {
         throw new Error('Value must be a valid number or a bigint.');
@@ -10,7 +11,7 @@ async function encryptValue(instance, contractAddress, userAddress, value) {
 
     const input = instance.createEncryptedInput(contractAddress, userAddress);
     const startTime = performance.now();
-    const encrypted = await input.add16(value).encrypt();
+    const encrypted = await input.add8(value).encrypt();
     const endTime = performance.now();
 
     const encryptionTime = endTime - startTime;
