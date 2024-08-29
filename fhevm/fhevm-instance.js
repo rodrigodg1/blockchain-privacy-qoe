@@ -11,16 +11,16 @@ async function encryptValue(instance, contractAddress, userAddress, value) {
 
     // Calculate encryption time in milliseconds
     const encryptionTime = endTime - startTime;
-    
+
     // Convert encrypted value to a string if it's not already
     const encryptedStr = typeof encrypted === 'string' ? encrypted : JSON.stringify(encrypted);
-    
+
     // Calculate size of encrypted value (in bytes)
     const encryptedSizeBytes = Buffer.byteLength(encryptedStr, 'utf8');
-    
+
     // Convert size from bytes to kilobytes (KB)
     const encryptedSizeKB = encryptedSizeBytes / 1024;
-    
+
     return { encrypted: encryptedStr, encryptionTime, encryptedSizeKB };
 }
 
