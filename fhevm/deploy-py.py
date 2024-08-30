@@ -9,7 +9,7 @@ if not w3.is_connected():
     raise Exception('Failed to connect to the blockchain.')
 
 # MetaMask private key (with 0x prefix)
-private_key = '0x875ab559e894777b3b3486b09f91369b4d3a1ab0d5bfebbf12299182940dcf26'
+private_key = '0x7afdf33a1523bf6fb353261ab6d51884d0d1b2aa2c9c7e67bbd4f7fe0adae361'
 
 # Validate the private key
 if len(private_key) != 66 or not private_key.startswith('0x') or not all(c in '0123456789abcdefABCDEF' for c in private_key[2:]):
@@ -47,7 +47,7 @@ transaction = Contract.constructor().build_transaction({
 signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
 
 # Send the transaction to the blockchain
-txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
 
 # Wait for the transaction receipt
 txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)

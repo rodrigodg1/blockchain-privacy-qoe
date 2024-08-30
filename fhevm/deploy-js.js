@@ -2,13 +2,17 @@ const Web3 = require('web3').default;
 const { abi, bytecode } = require('./artifacts/examples/Rand.sol/Rand.json'); // Adjust the path
 
 // Use the provided MetaMask private key (with 0x prefix)
-const privateKey = '0x3a62e8e800654214cce6f8da0fb0614f1ab21ce72ffcd1e3c9b232d833373447';
+//const privateKey = '0x3a62e8e800654214cce6f8da0fb0614f1ab21ce72ffcd1e3c9b232d833373447';
+
+const privateKey = '0x7afdf33a1523bf6fb353261ab6d51884d0d1b2aa2c9c7e67bbd4f7fe0adae361';
 
 // Convert private key to Buffer (if necessary)
 //const privateKeyBuffer = Buffer.from(privateKey.slice(2), 'hex');
 
 // Set up your Web3 provider (replace with your RPC node URL)
 const web3 = new Web3('https://devnet.zama.ai');
+
+//const web3 = new Web3('http://localhost:8545');
 
 // Derive the account from the private key
 const account = web3.eth.accounts.privateKeyToAccount(privateKey);
