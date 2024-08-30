@@ -1,9 +1,8 @@
 const Web3 = require('web3');
 const web3 = new Web3.default('https://devnet.zama.ai');
+//const web3 = new Web3.default('http://localhost:8545');
 const fs = require('fs');
 
-// Initialize a Web3 instance (replace with your RPC node URL)
-//const web3 = new Web3('https://devnet.zama.ai');
 
 web3.eth.net.isListening()
     .then(() => console.log('Connected to the blockchain'))
@@ -22,7 +21,8 @@ const account = web3.eth.accounts.privateKeyToAccount(privateKey);
 console.log(`Deploying from account: ${account.address}`);
 
 // Load the contract's ABI and bytecode (Adjust the path to your JSON file)
-const contractJson = JSON.parse(fs.readFileSync('./artifacts/examples/Rand.sol/Rand.json', 'utf8'));
+//const contractJson = JSON.parse(fs.readFileSync('./artifacts/examples/Rand.sol/Rand.json', 'utf8'));
+const contractJson = JSON.parse(fs.readFileSync('./artifacts/examples/Counter.sol/Counter.json', 'utf8'));
 const abi = contractJson.abi;
 const bytecode = contractJson.bytecode;
 
@@ -44,6 +44,7 @@ Contract.deploy({ data: bytecode })
             const transaction = {
                 chainId: 9000,  // Set your network's chainId
                 gas: gasEstimate,
+                //gas: gasEstimate + 1000,
                 gasPrice: web3.utils.toWei('20', 'gwei'),
                 nonce: nonce,
                 data: tx,

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause-Clear
+
 pragma solidity ^0.8.24;
 
-// dummy contract for dummy transactions just to advance blocks
+import "../lib/TFHE.sol";
+
 contract Counter {
-    uint32 value;
+  euint32 counter;
 
-    function increment() public {
-        value += 1;
-    }
-
-    function currentValue() public view returns (uint32) {
-        return value;
-    }
+  function add(einput valueInput, bytes calldata inputProof) public {
+    euint32 value = TFHE.asEuint32(valueInput, inputProof);
+    counter = TFHE.add(counter, value);
+    TFHE.allow(counter, address(this));
+  }
 }
