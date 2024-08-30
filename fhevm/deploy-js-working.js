@@ -9,7 +9,8 @@ web3.eth.net.isListening()
     .catch(e => { throw new Error('Failed to connect to the blockchain.') });
 
 // MetaMask private key (with 0x prefix)
-const privateKey = '0x7afdf33a1523bf6fb353261ab6d51884d0d1b2aa2c9c7e67bbd4f7fe0adae361';
+//check metamask for private key
+const privateKey = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
 
 // Validate the private key
 if (privateKey.length !== 66 || !privateKey.startsWith('0x') || !/^[0-9a-fA-F]+$/.test(privateKey.slice(2))) {
