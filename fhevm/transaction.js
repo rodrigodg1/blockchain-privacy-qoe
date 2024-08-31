@@ -56,11 +56,13 @@ async function main() {
       { id: "encryptionTime", title: "Encryption Time (ms)" },
       { id: "encryptedDataSize", title: "Encrypted Data Size (KB)" },
       { id: "transactionSize", title: "Transaction Size (KB)" },
-      {id: 'cpuUsage', title: 'CPU Usage (%)'},
+      { id: "cpuUsage", title: "CPU Usage (%)" },
       { id: "memoryUsage", title: "Memory Usage (MB)" },
+      { id: "transactionConfirmationTime", title: "Transaction Confirmation Time (s)" },
       { id: "transactionHash", title: "Transaction Hash" },
     ],
   });
+
   const results = [];
   fs.createReadStream("pokemon_encoded.csv")
     .pipe(csv())
@@ -131,11 +133,19 @@ async function main() {
           const transactionSizeBytes = web3.utils.hexToBytes(method.encodeABI()).length;
           const transactionSizeKB = transactionSizeBytes / 1024; // Convert to KB
 
+
+          const transactionStartTime = Date.now();
+
           const receipt = await method.send({
             from: account.address,
             gas: 1000000,
             gasPrice: web3.utils.toWei("20", "gwei"),
           });
+
+
+          const transactionConfirmationTime = (Date.now() - transactionStartTime) / 1000; // Convert to seconds
+
+
           await csvWriter.writeRecords([
             {
               provider: provider,
@@ -145,11 +155,14 @@ async function main() {
               transactionSize: transactionSizeKB.toFixed(2),
               cpuUsage: cpuUsage.toFixed(2),
               memoryUsage: memoryUsage.toFixed(2),
+              transactionConfirmationTime: transactionConfirmationTime.toFixed(2),
               transactionHash: receipt.transactionHash,
             },
           ]);
 
           console.log(`Data entry ${i + 1} added successfully. Transaction hash: ${receipt.transactionHash}`);
+          console.log(`Transaction confirmation time: ${transactionConfirmationTime} ms`);
+
         } catch (error) {
           console.error(`Error adding data entry ${i + 1}:`, error);
         }
