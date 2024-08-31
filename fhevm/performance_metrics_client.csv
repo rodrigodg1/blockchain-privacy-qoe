@@ -1,0 +1,6 @@
+provider,Row Number,Encryption Time (ms),Encrypted Data Size (KB),Transaction Size (KB),Transaction Hash
+https://devnet.zama.ai,1,41,156.16,44.22,0xdbe2da7839250adc1a1e761a825b5863647b7397758ad5ab0623a4ce3876f538
+https://devnet.zama.ai,2,38,156.08,44.22,0x789c35dd4477a64eae8830c6bfb9b0336f20635c07c83ecfb40e29c11728a1c0
+https://devnet.zama.ai,3,30,156.14,44.22,0xca826ceaab68beaf945c0577f2afc16949ed6bc3197b8578d47887e7e44665f1
+https://devnet.zama.ai,4,40,156.23,44.22,0xf13e9d6ff262e918bee1dc9c27c28181af0c45c799920b7f9bf60019c8348abd
+https://devnet.zama.ai,5,23,156.01,44.22,0x198a4c4bcd40034667013b050f3e0aaaa949200be6585b1272030e1545e95fbf
