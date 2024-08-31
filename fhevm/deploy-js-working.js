@@ -10,7 +10,10 @@ web3.eth.net.isListening()
 
 // MetaMask private key (with 0x prefix)
 //check metamask for private key
-const privateKey = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
+const privateKey_Zama_Dev = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
+const privateKey_local = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
+
+privateKey = privateKey_Zama_Dev;
 
 // Validate the private key
 if (privateKey.length !== 66 || !privateKey.startsWith('0x') || !/^[0-9a-fA-F]+$/.test(privateKey.slice(2))) {

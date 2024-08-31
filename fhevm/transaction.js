@@ -30,12 +30,23 @@ function getCpuUsage() {
 }
 
 async function main() {
+    //const web3 = new Web3.default('http://localhost:8545');
+    //const provider = "http://localhost:8545";
+    //const provider_csv = "localhost";
     const provider = "https://devnet.zama.ai";
     const provider_csv = "devnet.zama.ai";
+    
 
     const web3 = new Web3.default(provider);
-    const privateKey = "0x7afdf33a1523bf6fb353261ab6d51884d0d1b2aa2c9c7e67bbd4f7fe0adae361";
-    const contractAddress = "0x2e8b2c862065226a93826d14e29e48016dd8d2b0";
+
+    const privateKey_Zama_Dev = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
+    const privateKey_local = '0x3611d97e4794cd95dead683db1698b5b9d171f0c0ad4cbac2f8d88cc9ee591a5';
+
+    privateKey = privateKey_Zama_Dev;
+
+    const contractAddress = "0x3e5d0097127bb71bba06bc28006e90d93a95a83d";
+
+
     const userAddress = "0x3b31fC0b4B81184078AFB1835810A6C732Fcd9E1";
 
     const account = web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -47,6 +58,8 @@ async function main() {
     const contract = new web3.eth.Contract(abi, contractAddress);
 
     const instance = await fhevm.createInstance({ networkUrl: "https://devnet.zama.ai" });
+
+    
 
     const csvWriter = createCsvWriter({
         path: `performance_metrics_client_${provider_csv}.csv`,
@@ -178,6 +191,9 @@ async function main() {
                     console.log(`Data entry ${i + 1} added successfully. Transaction hash: ${receipt.transactionHash}`);
                     console.log(`Transaction confirmation time: ${transactionConfirmationTime} seconds`);
                     console.log(`Estimated gas: ${gasEstimate}, Actual gas used: ${gasUsed}`);
+
+                    // Wait for 2 seconds before processing the next data entry
+                    await new Promise(resolve => setTimeout(resolve, 2000));
 
                 } catch (error) {
                     console.error(`Error adding data entry ${i + 1}:`, error);
