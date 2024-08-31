@@ -12,7 +12,10 @@ function getEncryptedItemSize(handles, inputProof) {
 }
 
 async function main() {
+
+
     const provider = 'https://devnet.zama.ai';
+    const provider_csv = 'devnet.zama.ai';
     
     const web3 = new Web3.default(provider);
     const privateKey = '0x7afdf33a1523bf6fb353261ab6d51884d0d1b2aa2c9c7e67bbd4f7fe0adae361';
@@ -30,7 +33,9 @@ async function main() {
     const instance = await fhevm.createInstance({ networkUrl: "https://devnet.zama.ai" });
 
     const csvWriter = createCsvWriter({
-        path: 'performance_metrics_client.csv',
+
+        path: `performance_metrics_client_${provider_csv}.csv`,
+        
         header: [
             {id: 'provider', title: 'provider'},
             {id: 'rowNumber', title: 'Row Number'},
